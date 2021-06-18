@@ -10,11 +10,11 @@
         "build:grammar": "glob \"./**/*.pegjs\" | xargs -I{} peggy --format es {}",
         "build:ts": "rollup -c",
         "run": "node .",
-        "start": "npm-run-all build run"
+        "start": "node ."
     },
     "engines": {
         "node": "v15.12.0",
-        "pnpm": "6.7.6"
+        "npm": "7.16.0"
     },
     "keywords": [
         "discord",
