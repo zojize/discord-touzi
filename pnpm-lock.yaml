@@ -13,6 +13,8 @@ specifiers:
   discord.js: github:discordjs/discord.js
   dotenv-load: ^2.0.0
   eslint: ^7.28.0
+  husky: ^6.0.0
+  is-ci: ^3.0.0
   jest: ^27.0.4
   lodash: ^4.17.21
   npm-run-all: ^4.1.5
@@ -41,6 +43,8 @@ devDependencies:
   '@typescript-eslint/parser': registry.nlark.com/@typescript-eslint/parser/4.27.0_eslint@7.28.0+typescript@4.3.4
   cli-glob: registry.nlark.com/cli-glob/0.1.0
   eslint: registry.nlark.com/eslint/7.28.0
+  husky: registry.nlark.com/husky/6.0.0
+  is-ci: 3.0.0
   jest: 27.0.4
   npm-run-all: 4.1.5
   peggy: registry.nlark.com/peggy/1.2.0
@@ -1008,10 +1012,6 @@ packages:
     engines: {node: '>=10'}
     dev: true
 
-  /ci-info/3.2.0:
-    resolution: {integrity: sha512-dVqRX7fLUm8J6FgHJ418XuIgDLZDkYcDFTeL6TA2gt5WlIZUQrrH6EZrNClwT/H0FateUsZkGIOPRrLbP+PR9A==}
-    dev: true
-
   /cjs-module-lexer/1.2.1:
     resolution: {integrity: sha512-jVamGdJPDeuQilKhvVn1h3knuMOZzr8QDnpk+M9aMlCaMkTDd6fBWPhiDqFvFZ07pL0liqabAiuy8SY4jGHeaw==}
     dev: true
@@ -1628,10 +1628,10 @@ packages:
     dev: true
 
   /is-ci/3.0.0:
-    resolution: {integrity: sha512-kDXyttuLeslKAHYL/K28F2YkM3x5jvFPEw3yXbRptXydjD9rpLEz+C5K5iutY9ZiUu6AP41JdvRQwF4Iqs4ZCQ==}
+    resolution: {integrity: sha1-x+e+PJ2O730PoUQ5C9HkuI3EyZQ=, tarball: is-ci/download/is-ci-3.0.0.tgz}
     hasBin: true
     dependencies:
-      ci-info: 3.2.0
+      ci-info: registry.nlark.com/ci-info/3.2.0
     dev: true
 
   /is-extglob/2.1.1:
@@ -3737,6 +3737,12 @@ packages:
       supports-color: registry.nlark.com/supports-color/7.2.0
     dev: true
 
+  registry.nlark.com/ci-info/3.2.0:
+    resolution: {integrity: sha1-KHbLlIpJh5e1I28AlbwFfQ3KOLY=, registry: https://registry.npm.taobao.org/, tarball: https://registry.nlark.com/ci-info/download/ci-info-3.2.0.tgz}
+    name: ci-info
+    version: 3.2.0
+    dev: true
+
   registry.nlark.com/cli-glob/0.1.0:
     resolution: {integrity: sha1-C6xj8XjbvRB4YRk6ckgSSn4f+bY=, registry: https://registry.npm.taobao.org/, tarball: https://registry.nlark.com/cli-glob/download/cli-glob-0.1.0.tgz}
     name: cli-glob
@@ -3987,6 +3993,13 @@ packages:
     name: has-symbols
     version: 1.0.2
     engines: {node: '>= 0.4'}
+    dev: true
+
+  registry.nlark.com/husky/6.0.0:
+    resolution: {integrity: sha1-gQ8RhprfUWBMMupXftvDd9f5MZ4=, registry: https://registry.npm.taobao.org/, tarball: https://registry.nlark.com/husky/download/husky-6.0.0.tgz?cache=0&sync_timestamp=1624025581004&other_urls=https%3A%2F%2Fregistry.nlark.com%2Fhusky%2Fdownload%2Fhusky-6.0.0.tgz}
+    name: husky
+    version: 6.0.0
+    hasBin: true
     dev: true
 
   registry.nlark.com/is-bigint/1.0.2:
