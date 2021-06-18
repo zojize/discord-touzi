@@ -1,16 +1,19 @@
 import type { ArgsOf, Client } from "@typeit/discord";
-import type { Dice } from "../dice-grammar";
+import type { Dice, Transform } from "../dice-grammar";
 import { Discord, On, Once, Guard } from "@typeit/discord";
 import * as diceParser from "../dice-grammar";
 import * as kwargsParser from "../kwargs-grammar";
 import identity from "lodash/identity";
+import range from "lodash/range";
+
+const commandPrefix = [".", "。"];
 
 export const isCommand = async (
     [message]: ArgsOf<"message">,
     _: unknown,
     next: () => Promise<unknown>
 ): Promise<void> => {
-    if (message.content.startsWith("!")) {
+    if (message.content[0] && commandPrefix.includes(message.content[0])) {
         await next();
     }
 };
@@ -39,7 +42,13 @@ export abstract class RollDice {
     @On("message")
     @Guard(isCommand)
     private onMessage([message]: ArgsOf<"message">): void {
-        const parsedCommand = parseCommand(message.content);
+        let parsedCommand: ParsedCommand;
+        try {
+            parsedCommand = parseCommand(message.content);
+        } catch (e) {
+            console.error("command parsing error", e);
+            return;
+        }
 
         console.log(`received command: ${JSON.stringify(parsedCommand)}`);
 
@@ -64,6 +73,7 @@ export abstract class RollDice {
                 try {
                     parsed = diceParser.parse(raw);
                 } catch (e) {
+                    console.error("parsing error", e);
                     return;
                 }
 
@@ -94,45 +104,36 @@ function roll(dice: Dice): RollResult {
     let result: number;
     let formatted: string;
 
+    const { transforms = [] } = dice;
+    const trans = transfromFunc(transforms);
+
     switch (dice.type) {
         case "dice": {
-            const { sides, multiplier, offset, times } = dice;
-            results = Array.from(range(times ?? 1)).map(
-                Array.isArray(sides)
-                    ? () => choice(sides) * (multiplier ?? 1) + (offset ?? 0)
-                    : () =>
-                          randint(1, sides + 1) * (multiplier ?? 1) +
-                          (offset ?? 0)
-            );
+            const { sides, times } = dice;
+            results = range(times ?? 1)
+                .map(
+                    Array.isArray(sides)
+                        ? () => choice(sides)
+                        : () => randint(1, sides + 1)
+                )
+                .map(trans);
             result = Array.isArray(results)
                 ? results.reduce((a, b) => a + b)
                 : results;
-            formatted =
-                (times ? `${times}` : "") +
-                `d${JSON.stringify(sides)}` +
-                (multiplier ? `*${multiplier}` : "") +
-                (offset
-                    ? `${offset >= 0 ? "+" : "-"}${Math.abs(offset)}`
-                    : "") +
-                (results.length > 1 ? `(${results.join("+")})` : "") +
-                `=${result}`;
+            formatted = simpleFormatResults(results) + ` = **${result}**`;
             break;
         }
         case "repeat": {
             const { times } = dice;
-            results = Array.from(range(times)).map(() => roll(dice.dice));
+            results = range(times).map(() => roll(dice.dice));
             result = results.reduce((a, b) => a + b.result, 0);
-            formatted = `{\n${indent(
-                results.map((r) => r.formatted).join(" +\n")
-            )}\n}=${result}`;
+            formatted = simpleFormatResults(results) + ` = **${result}**`;
             break;
         }
         case "group": {
             results = dice.dice.map(roll);
             result = results.reduce((a, b) => a + b.result, 0);
-            formatted = `[\n${indent(
-                results.map((r) => r.formatted).join(" +\n")
-            )}\n]=${result}`;
+            formatted = simpleFormatResults(results) + ` = **${result}**`;
             break;
         }
     }
@@ -148,23 +149,44 @@ function roll(dice: Dice): RollResult {
     function choice<T>(arr: T[]): T {
         return arr[randint(0, arr.length)];
     }
-    function* range(n: number): Generator<number> {
-        for (let i = 0; i < n; i++) yield i;
+    // function indent(str: string, ind = "  "): string {
+    //     return (ind + str).replaceAll("\n", "\n" + ind);
+    // }
+    function add(a: number, b: number): number {
+        return a + b;
     }
-    function indent(str: string, ind = "  "): string {
-        return (ind + str).replaceAll("\n", "\n" + ind);
+    function mul(a: number, b: number): number {
+        return a * b;
+    }
+    function transfromFunc(trans: Transform[]): (n: number) => number {
+        return (n: number) =>
+            trans.reduce(
+                (a, { type, value }) =>
+                    ({ multiplier: mul, offset: add }[type](a, value)),
+                n
+            );
+    }
+    function simpleFormatResults(
+        res: RollResult[] | number[],
+        deep = false
+    ): string {
+        const backtick = deep ? "" : "`";
+        return `${backtick}[${res
+            .map((r) =>
+                typeof r === "number" ? r : simpleFormatResults(r.results, true)
+            )
+            .join("+")}]${backtick}`;
     }
 }
 
-const commandRegex = /!(?<command>[a-zA-Z+\-#$%@]+)(?<kwargs>\(.*?\))?/;
-
-function parseCommand<T = unknown>(
-    cmd: string
-): {
+const commandRegex = /(?:\.|。)(?<command>[a-zA-Z+\-#$%@]+)(?<kwargs>\(.*?\))?/;
+interface ParsedCommand<T = any> {
     commandName: string;
     commandBody: string;
     kwargs?: T | undefined;
-} {
+}
+
+function parseCommand<T = any>(cmd: string): ParsedCommand<T> {
     const matchedCommand = cmd.match(commandRegex)!;
 
     if (matchedCommand) {
@@ -175,9 +197,16 @@ function parseCommand<T = unknown>(
             };
         return {
             commandName,
-            commandBody: cmd.replace(commandRegex, ""),
+            commandBody: cmd.replace(commandRegex, "").trim(),
             kwargs: kwargs ? kwargsParser.parse<T>(kwargs) : void 0,
         };
     }
     throw Error("not a command");
 }
+
+const sign = {
+    "-": -1,
+    "+": 1,
+    [-1]: "-",
+    [1]: "+",
+};
