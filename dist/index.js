@@ -1,2 +1,0 @@
-"use strict";require("reflect-metadata");var e=require("discord.js"),t=require("@typeit/discord");function n(e){return e&&"object"==typeof e&&"default"in e?e:{default:e}}n(require("dotenv-load")).default(),async function(){const n=new t.Client({intents:[e.Intents.FLAGS.GUILDS,e.Intents.FLAGS.GUILD_MESSAGES],classes:[`${__dirname}/discords/*.js`],silent:!0});await n.login(process.env.TOKEN)}();
-//# sourceMappingURL=index.js.map
