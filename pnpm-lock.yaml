@@ -10,7 +10,6 @@ specifiers:
   '@typescript-eslint/eslint-plugin': ^4.27.0
   '@typescript-eslint/parser': ^4.27.0
   cli-glob: ^0.1.0
-  discord.js: github:discordjs/discord.js
   dotenv-load: ^2.0.0
   eslint: ^7.28.0
   husky: ^6.0.0
@@ -28,7 +27,6 @@ specifiers:
 
 dependencies:
   '@typeit/discord': registry.nlark.com/@typeit/discord/5.0.13
-  discord.js: github.com/discordjs/discord.js/e3ed74a5e875ecd841dc1f6f1b1e78741864f980
   dotenv-load: registry.nlark.com/dotenv-load/2.0.0
   lodash: registry.nlark.com/lodash/4.17.21
   reflect-metadata: 0.1.13

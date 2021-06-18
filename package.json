@@ -25,7 +25,6 @@
     "license": "MIT",
     "dependencies": {
         "@typeit/discord": "^5.0.13",
-        "discord.js": "github:discordjs/discord.js",
         "dotenv-load": "^2.0.0",
         "lodash": "^4.17.21",
         "reflect-metadata": "^0.1.13"
