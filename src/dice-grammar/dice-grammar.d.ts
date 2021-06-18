@@ -1,20 +1,29 @@
 export type DiceTypes = "dice" | "repeat" | "group";
 
-export interface BasicDice {
+export type TransformTypes = "multiplier" | "offset";
+
+export interface Transform {
+    type: TransformTypes;
+    value: number;
+}
+
+interface BaseDice {
+    type: DiceTypes;
+    transforms?: Transform[];
+}
+export interface BasicDice extends BaseDice {
     type: "dice";
     sides: number | number[];
-    multiplier?: number;
-    offset?: number;
     times?: number;
 }
 
-export interface RepeatedDice {
+export interface RepeatedDice extends BaseDice {
     type: "repeat";
     times: number;
     dice: BasicDice | RepeatedDice | DiceGroup;
 }
 
-export interface DiceGroup {
+export interface DiceGroup extends BaseDice {
     type: "group";
     dice: (BasicDice | RepeatedDice | DiceGroup)[];
 }
