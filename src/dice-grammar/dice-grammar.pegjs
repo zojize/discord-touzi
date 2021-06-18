@@ -1,5 +1,12 @@
 {{
     const sign = { "+": 1, "-": -1 };
+    const transType = {
+        "+": "offset",
+        "-": "offset",
+        "*": "multiplier",
+        "x": "multiplier",
+        "X": "multiplier",
+    };
 
     function diceMultiplier(dice, m) {
         switch (dice.type) {
@@ -19,6 +26,16 @@
                     dice: dice.dice.map(d => diceMultiplier(d, m)),
                 }
         }
+    }
+
+    function diceTransform(dice, transformType, value) {
+        return {
+            ...dice,
+            transforms: (dice.transforms ?? []).concat({
+                type: transformType,
+                value,
+            }),
+        };
     }
 
     function diceOffset(dice, o) {
@@ -97,16 +114,13 @@ dice_repeat "dice repeat"=
     dice_ntimes
 
 dice_ntimes "dice n times"=
-    n:uint ws d:dice_offset { return diceTimes(d, n) } /
-    dice_offset
+    n:uint ws d:dice_transform { return diceTimes(d, n) } /
+    dice_transform
 
-dice_offset "dice offset"=
-	d:dice_multiplier s:sign o:uint { return diceOffset(d, sign[s] * o) } /
-    dice_multiplier
-
-dice_multiplier "dice multiplier"=
-    d:dice_n times m:uint { return diceMultiplier(d, m) } /
-    dice_n
+dice_transform "dice transform" =
+    d:dice_n transforms:(op:(times / sign) ws v:int { return [transType[op], (sign[op] ?? 1) * v] })* {
+            return transforms.reduce((a, [type, v]) => diceTransform(a, type, v), d)
+    }
 
 dice_n "dice"=
     [dD] n:uint { return dice(n) } /
