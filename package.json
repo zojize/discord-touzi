@@ -1,0 +1,47 @@
+{
+    "name": "discord-touzi",
+    "version": "1.0.0",
+    "description": "Discord DnD bot",
+    "main": "dist/index.js",
+    "scripts": {
+        "build": "npm-run-all build:grammar build:ts",
+        "build:dice-grammar": "peggy --format es ./src/dice-grammar/dice-grammar.pegjs",
+        "build:kwargs-grammar": "peggy --format es ./src/kwargs-grammar/kwargs-grammar.pegjs",
+        "build:grammar": "glob \"./**/*.pegjs\" | xargs -I{} peggy --format es {}",
+        "build:ts": "rollup -c",
+        "run": "node .",
+        "start": "npm-run-all build run"
+    },
+    "keywords": [
+        "discord",
+        "dice",
+        "dnd"
+    ],
+    "author": "SIGUSR97",
+    "license": "MIT",
+    "dependencies": {
+        "@typeit/discord": "^5.0.13",
+        "discord.js": "github:discordjs/discord.js",
+        "dotenv-load": "^2.0.0",
+        "lodash": "^4.17.21",
+        "reflect-metadata": "^0.1.13"
+    },
+    "devDependencies": {
+        "@rollup/plugin-typescript": "^8.2.1",
+        "@types/dotenv-load": "^2.0.0",
+        "@types/jest": "^26.0.23",
+        "@types/lodash": "^4.14.170",
+        "@types/node": "^15.12.2",
+        "@typescript-eslint/eslint-plugin": "^4.27.0",
+        "@typescript-eslint/parser": "^4.27.0",
+        "cli-glob": "^0.1.0",
+        "eslint": "^7.28.0",
+        "jest": "^27.0.4",
+        "npm-run-all": "^4.1.5",
+        "rollup": "^2.52.1",
+        "rollup-plugin-terser": "^7.0.2",
+        "rollup-plugin-typescript2": "^0.30.0",
+        "tslib": "^2.3.0",
+        "typescript": "^4.3.4"
+    }
+}

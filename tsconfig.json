@@ -1,0 +1,26 @@
+{
+    "compilerOptions": {
+        "target": "esnext",
+        "module": "esnext",
+        "strict": true,
+        "allowJs": true,
+        "importHelpers": true,
+        "moduleResolution": "node",
+        "experimentalDecorators": true,
+        "emitDecoratorMetadata": true,
+        "esModuleInterop": true,
+        "allowSyntheticDefaultImports": true,
+        "skipLibCheck": true,
+        "forceConsistentCasingInFileNames": true,
+        "noImplicitAny": false,
+        "resolveJsonModule": true,
+        "types": ["node", "jest"],
+        "outDir": "dist",
+        "rootDir": "./src",
+        "baseUrl": "./",
+        "noErrorTruncation": true,
+        "lib": ["esnext", "dom", "dom.iterable", "scripthost", "es2019"]
+    },
+    "include": ["src/**/*.ts", "src/**/*.js"],
+    "exclude": ["node_modules"]
+}
