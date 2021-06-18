@@ -12,6 +12,9 @@
         "run": "node .",
         "start": "npm-run-all build run"
     },
+    "engines": {
+        "node": "14.x"
+    },
     "keywords": [
         "discord",
         "dice",
